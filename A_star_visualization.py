@@ -13,20 +13,20 @@ CELL_SIZE=20
 pygame.init()
 class Cell:
     def __init__(self, posx, posy, size, color, id, walkable, G, H, F, parent, outline):
-        self.posx = posx
-        self.posy = posy
+        self.posx = posx    #both posx and posy are the coordinates 
+        self.posy = posy    #of a cell in pixel
         self.size = size
         self.color = color
         self.walkable=walkable
-        self.G=G
-        self.H=H
-        self.F=F
+        self.G=G    #cost of a cell from the Start node
+        self.H=H    #cost of a cell to the End node
+        self.F=F    #simply G+H
         self.parent=parent
         self.outline=outline
 
 
     def setColor(self, color): self.color = color
-    def setWalkable(self, walkable): self.walkable=walkable
+    def setWalkable(self, walkable): self.walkable=walkable #
     def ifWalkable(self): return self.walkable
     def setOutline(self): self.outline=outline
     def draw(self, screen, outline):
@@ -93,7 +93,7 @@ def getNeighbors(current_pos, grid):
     return neighbors
 
 
-
+#get the G or the H cost, depending on wich node, start or end node,  is given in input
 def getCost(sx, sy, posx, posy):
     x=max(posx, sx)-min(posx, sx)
     y=max(posy, sy)-min(posy, sy)
@@ -101,9 +101,11 @@ def getCost(sx, sy, posx, posy):
     else:
         return min(x, y)*14+(max(x, y)-min(x, y))*10
 
+#transform the pixel coordinates in maxtrix indices
 def getGridPos(posx, posy):
     return (int(math.floor(posx/CELL_SIZE)), int(math.floor(posy/CELL_SIZE)))
 
+#update color and outline of the cells before update s
 def updateGrid(screen, grid, wall_pos):
     for i in range(len(grid)):
         for j in range(len(grid[i])):
@@ -150,16 +152,16 @@ def main():
         for event in pygame.event.get():
             if event.type==pygame.QUIT: return
 
-        ######################## set up start cell, end cell and walls
+        # set up start cell, end cell and walls
         if(pygame.mouse.get_pressed()[2]==1): #if wall
             wall_pos=prepareCell(grid, screen, black, (0, 0, 1))
             walls_lst.append(wall_pos)
-        elif(pygame.mouse.get_pressed()[0]==1 and se==1): #if start
+        elif(pygame.mouse.get_pressed()[0]==1 and se==1): #if start node
             wall_pos=prepareCell(grid, screen, blue, (1, 0, 0))
             start_pos=wall_pos
             checkstart=pygame.mouse.get_pos()
             se=2
-        elif(pygame.mouse.get_pressed()[0]==1 and se==2 and pygame.mouse.get_pos()!=checkstart): #if end
+        elif(pygame.mouse.get_pressed()[0]==1 and se==2 and pygame.mouse.get_pos()!=checkstart): #if end node
             wall_pos=prepareCell(grid, screen, red, (0, 1, 0))
             end_pos=wall_pos
             se=0
