@@ -93,7 +93,7 @@ def getNeighbors(current_pos, grid):
     return neighbors
 
 
-#get the G or the H cost, depending on wich node, start or end node,  is given in input
+#get the G or the H cost, according to the euclidean method , depending on wich node, start or end node,  is given in input
 def getCost(sx, sy, posx, posy):
     x=max(posx, sx)-min(posx, sx)
     y=max(posy, sy)-min(posy, sy)
