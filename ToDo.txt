@@ -1,4 +1,4 @@
 1 - Correct the event in wich walls and Start/End cells overwrite other cells
-2 - Add to each cell considered by the algorithm teh G, H and F cost as animation on the grid
+2 - Add to each cell considered by the algorithm the G, H and F cost as animation on the grid
 3 - Make a delete and clear buttons
 4 - Manage animation speed
