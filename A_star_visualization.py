@@ -43,6 +43,7 @@ def Astar(s, e, grid, screen):
             getPath(current, grid, screen)
             return    #path found
         else:
+            current.setColor(RED)
             close_lst.append(current)
             currentGridPos=getGridPos(current.getPosition()[0], current.getPosition()[1])
             neighbors=getNeighbors(currentGridPos, grid)
@@ -60,7 +61,7 @@ def Astar(s, e, grid, screen):
                         neig.parent=currentGridPos
                         open_lst.append(neig)
                         grid[neigGridPos[0]][neigGridPos[1]].setColor(GREEN)
-        time.sleep(0.05)
+        time.sleep(0.005)
         updateGrid(screen, grid)
         pygame.display.update()
 
@@ -164,7 +165,7 @@ def main():
         for event in pygame.event.get():
             if event.type==pygame.QUIT: return
             if event.type==pygame.KEYDOWN and event.key==pygame.K_c:
-                grid=drawGrid(screen, cell_size)            
+                grid=drawGrid(screen, cell_size)
                 se=1
             # elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 4 and cell_size!=10:
             #     cell_size-=10
