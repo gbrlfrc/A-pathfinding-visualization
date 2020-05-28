@@ -2,7 +2,7 @@ import pygame, math
 from collections import deque
 import time
 
-WIN_SIZE = (700, 700)
+WIN_SIZE = (900, 900)
 BLACK = ( 0, 0, 0)
 WHITE = ( 255, 255, 255)
 PATH = (0, 0, 102)
@@ -11,7 +11,7 @@ GREEN = (0, 255, 0)
 CELL_SIZE=20
 FOUND=False
 
-pygame.init()
+
 class Cell:
     def __init__(self, posx, posy, size, color, walkable, G, H, F, parent, outline):
         self.posx = posx    #both posx and posy are the coordinates
@@ -127,7 +127,6 @@ def prepareCell(grid, screen, color, type):
         grid[posInGrid[0]][posInGrid[1]].walkable=True
         grid[posInGrid[0]][posInGrid[1]].setColor(color)
         grid[posInGrid[0]][posInGrid[1]].setOutline(0)
-
     if(type[0]==1):
         grid[posInGrid[0]][posInGrid[1]].walkable=True
         grid[posInGrid[0]][posInGrid[1]].setColor(color)
@@ -164,6 +163,9 @@ def main():
     while not found:
         for event in pygame.event.get():
             if event.type==pygame.QUIT: return
+            if event.type==pygame.KEYDOWN and event.key==pygame.K_c:
+                grid=drawGrid(screen, cell_size)            
+                se=1
             # elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 4 and cell_size!=10:
             #     cell_size-=10
             #     grid=drawGrid(screen, cell_size)
@@ -171,7 +173,7 @@ def main():
             #     cell_size+=10
             #     grid=drawGrid(screen, cell_size)
         # set up start cell, end cell and walls
-        if(pygame.mouse.get_pressed()[2]==1): #if wall
+        if(pygame.mouse.get_pressed()[2]==1 and se!=-1): #if wall
             wall_pos=prepareCell(grid, screen, black, (0, 0, 1))
         elif(pygame.mouse.get_pressed()[0]==1 and se==1): #if start node
             wall_pos=prepareCell(grid, screen, green, (1, 0, 0))
