@@ -13,7 +13,7 @@ FOUND=False
 
 
 class Cell:
-    def __init__(self, posx, posy, size, color, walkable, G, H, F, parent, outline):
+    def __init__(self, posx, posy, size, color, walkable, G, H, F, parent, outline, inPath):
         self.posx = posx    #both posx and posy are the coordinates
         self.posy = posy    #of a cell in pixel
         self.size = size
@@ -24,11 +24,13 @@ class Cell:
         self.F=F    #simply G+H
         self.parent=parent
         self.outline=outline
+        self.inPath=inPath
 
     def setColor(self, color): self.color = color
+    def setInPath(self, inPath): self.inPath = inPath
     def setWalkable(self, walkable): self.walkable=walkable
     def setOutline(self, outline): self.outline=outline
-    def getPosition(self): return (self.posx, self.posy)
+    def getPosition(self): return [self.posx, self.posy]
 
 
 def Astar(s, e, grid, screen):
@@ -43,7 +45,7 @@ def Astar(s, e, grid, screen):
             getPath(current, grid, screen)
             return    #path found
         else:
-            current.setColor(RED)
+            if current!=grid[s[0]][s[1]]: current.setColor(RED)
             close_lst.append(current)
             currentGridPos=getGridPos(current.getPosition()[0], current.getPosition()[1])
             neighbors=getNeighbors(currentGridPos, grid)
@@ -72,8 +74,9 @@ def getPath(e, grid, screen):
         e.setColor(GREEN)
         return
     else:
-        grid[e.parent[0]][e.parent[1]].setOutline(0)
+        grid[e.parent[0]][e.parent[1]].setOutline(1)
         grid[e.parent[0]][e.parent[1]].setColor(PATH)
+        grid[e.parent[0]][e.parent[1]].setInPath(True)
         getPath(grid[e.parent[0]][e.parent[1]], grid, screen)
 
 def getNeighbors(current_pos, grid):
@@ -111,9 +114,15 @@ def getGridPos(posx, posy):
 
 #update color and outline of the cells before update s
 def updateGrid(screen, grid):
+    old_i, old_j=-1, -1
     for i in range(len(grid)):
         for j in range(len(grid[i])):
             if grid[i][j].walkable==False:grid[i][j].setOutline(0)
+            if grid[i][j].inPath==True:
+                if old_i!=-1:
+                    pygame.draw.lines(screen, PATH, False, ((int(grid[old_i][old_j].getPosition()[0]+CELL_SIZE/2), int(grid[old_i][old_j].getPosition()[1]+CELL_SIZE/2)), (int(grid[i][j].getPosition()[0]+CELL_SIZE/2), int(grid[i][j].getPosition()[1]+CELL_SIZE/2))), 5)
+                    old_i, old_j=i, j
+                else: old_i, old_j=i, j
             pygame.draw.rect(screen, grid[i][j].color, (grid[i][j].posx, grid[i][j].posy, grid[i][j].size, grid[i][j].size), grid[i][j].outline)
     return grid
 
@@ -141,7 +150,7 @@ def drawGrid(screen, cell_size):
     for i in range(0, int(win_size[0]), cell_size):
         grid_row=[]
         for j in range(0, int(win_size[0]), cell_size):
-            cell=Cell(i, j, cell_size,BLACK, True, 0, 0, 0, (-1, -1), 1)
+            cell=Cell(i, j, cell_size,BLACK, True, 0, 0, 0, (-1, -1), 1, False)
             grid_row.append(cell)
             pygame.draw.rect(screen, cell.color, (cell.posx, cell.posy, cell.size, cell.size), 1)
         grid.append(grid_row)
