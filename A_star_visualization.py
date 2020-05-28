@@ -2,13 +2,14 @@ import pygame, math
 from collections import deque
 import time
 
-WIN_SIZE=(700, 700)
+WIN_SIZE = (700, 700)
 BLACK = ( 0, 0, 0)
 WHITE = ( 255, 255, 255)
 PATH = (0, 0, 102)
 RED = ( 255, 0, 0)
 GREEN = (0, 255, 0)
 CELL_SIZE=20
+FOUND=False
 
 pygame.init()
 class Cell:
@@ -24,7 +25,6 @@ class Cell:
         self.parent=parent
         self.outline=outline
 
-
     def setColor(self, color): self.color = color
     def setWalkable(self, walkable): self.walkable=walkable
     def setOutline(self, outline): self.outline=outline
@@ -32,13 +32,14 @@ class Cell:
 
 
 def Astar(s, e, grid, screen):
+    found=FOUND
     open_lst=close_lst=deque()
     open_lst.append(grid[s[0]][s[1]])
     while(len(open_lst)!=0):
-        time=0
         open_lst=deque(sorted(open_lst, key=lambda x: x.F))
         current=open_lst.popleft()
         if current==grid[e[0]][e[1]]:
+            found=True
             getPath(current, grid, screen)
             return    #path found
         else:
@@ -59,8 +60,10 @@ def Astar(s, e, grid, screen):
                         neig.parent=currentGridPos
                         open_lst.append(neig)
                         grid[neigGridPos[0]][neigGridPos[1]].setColor(GREEN)
-                        # while(time%180!=0):time+=1
-                        # updateGrid(screen, grid)
+        time.sleep(0.05)
+        updateGrid(screen, grid)
+        pygame.display.update()
+
     return
 
 def getPath(e, grid, screen):
@@ -131,31 +134,42 @@ def prepareCell(grid, screen, color, type):
         grid[posInGrid[0]][posInGrid[1]].setOutline(0)
     return posInGrid
 
+def drawGrid(screen, cell_size):
+    win_size=WIN_SIZE
+    grid=[]
+    screen.fill(WHITE)
+    for i in range(0, int(win_size[0]), cell_size):
+        grid_row=[]
+        for j in range(0, int(win_size[0]), cell_size):
+            cell=Cell(i, j, cell_size,BLACK, True, 0, 0, 0, (-1, -1), 1)
+            grid_row.append(cell)
+            pygame.draw.rect(screen, cell.color, (cell.posx, cell.posy, cell.size, cell.size), 1)
+        grid.append(grid_row)
+    return grid
 
 def main():
     win_size=WIN_SIZE
     cell_size=CELL_SIZE
+    found=FOUND
     white, black, blue, red, green=WHITE, BLACK, PATH, RED, GREEN
     wall_pos, start_pos, end_pos=(), (), ()
     se=1
 
     screen=pygame.display.set_mode(win_size)
     pygame.display.set_caption("A* Visualization")
-    screen.fill(white)
 
-    grid=[]
-    for i in range(0, int(win_size[0]), cell_size):
-        grid_row=[]
-        for j in range(0, int(win_size[0]), cell_size):
-            cell=Cell(i, j, cell_size, black, True, 0, 0, 0, (-1, -1), 1)
-            grid_row.append(cell)
-            pygame.draw.rect(screen, cell.color, (cell.posx, cell.posy, cell.size, cell.size), 1)
-        grid.append(grid_row)
 
-    while True:
+    grid=drawGrid(screen, cell_size)
+
+    while not found:
         for event in pygame.event.get():
             if event.type==pygame.QUIT: return
-
+            # elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 4 and cell_size!=10:
+            #     cell_size-=10
+            #     grid=drawGrid(screen, cell_size)
+            # elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 5 != 700:
+            #     cell_size+=10
+            #     grid=drawGrid(screen, cell_size)
         # set up start cell, end cell and walls
         if(pygame.mouse.get_pressed()[2]==1): #if wall
             wall_pos=prepareCell(grid, screen, black, (0, 0, 1))
@@ -171,11 +185,11 @@ def main():
         #########################
         if(se==0):
             Astar(start_pos, end_pos ,grid, screen)
+            se=-1
 
         updateGrid(screen, grid)
         pygame.time.Clock().tick(60)
         pygame.display.update()
-
 
     pygame.quit()
 
