@@ -114,34 +114,24 @@ def getGridPos(posx, posy):
 
 #update color and outline of the cells before update s
 def updateGrid(screen, grid):
-    old_i, old_j=-1, -1
     for i in range(len(grid)):
         for j in range(len(grid[i])):
             if grid[i][j].walkable==False:grid[i][j].setOutline(0)
             if grid[i][j].inPath==True:
-                if old_i!=-1:
-                    pygame.draw.lines(screen, PATH, False, ((int(grid[old_i][old_j].getPosition()[0]+CELL_SIZE/2), int(grid[old_i][old_j].getPosition()[1]+CELL_SIZE/2)), (int(grid[i][j].getPosition()[0]+CELL_SIZE/2), int(grid[i][j].getPosition()[1]+CELL_SIZE/2))), 5)
-                    old_i, old_j=i, j
-                else: old_i, old_j=i, j
+                grid[i][j].setColor(PATH)
+                grid[i][j].setOutline(0)
             pygame.draw.rect(screen, grid[i][j].color, (grid[i][j].posx, grid[i][j].posy, grid[i][j].size, grid[i][j].size), grid[i][j].outline)
     return grid
 
 # draw start cell, end cell and wall on grid
-def prepareCell(grid, screen, color, type):
+def prepareCell(grid, screen, color, outline, walkable):
     posInGrid=getGridPos(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
-    if(type[2]==1):
-        grid[posInGrid[0]][posInGrid[1]].walkable=False
-        grid[posInGrid[0]][posInGrid[1]].setColor(color)
-        grid[posInGrid[0]][posInGrid[1]].setOutline(1)
-    if(type[1]==1):
-        grid[posInGrid[0]][posInGrid[1]].walkable=True
-        grid[posInGrid[0]][posInGrid[1]].setColor(color)
-        grid[posInGrid[0]][posInGrid[1]].setOutline(0)
-    if(type[0]==1):
-        grid[posInGrid[0]][posInGrid[1]].walkable=True
-        grid[posInGrid[0]][posInGrid[1]].setColor(color)
-        grid[posInGrid[0]][posInGrid[1]].setOutline(0)
+    grid[posInGrid[0]][posInGrid[1]].walkable=walkable
+    grid[posInGrid[0]][posInGrid[1]].setColor(color)
+    grid[posInGrid[0]][posInGrid[1]].setOutline(outline)
+
     return posInGrid
+
 
 def drawGrid(screen, cell_size):
     win_size=WIN_SIZE
@@ -167,11 +157,11 @@ def main():
     screen=pygame.display.set_mode(win_size)
     pygame.display.set_caption("A* Visualization")
 
-
     grid=drawGrid(screen, cell_size)
 
     while not found:
         for event in pygame.event.get():
+
             if event.type==pygame.QUIT: return
             if event.type==pygame.KEYDOWN and event.key==pygame.K_c:
                 grid=drawGrid(screen, cell_size)
@@ -182,25 +172,30 @@ def main():
             # elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 5 != 700:
             #     cell_size+=10
             #     grid=drawGrid(screen, cell_size)
+
         # set up start cell, end cell and walls
-        if(pygame.mouse.get_pressed()[2]==1 and se!=-1): #if wall
-            wall_pos=prepareCell(grid, screen, black, (0, 0, 1))
-        elif(pygame.mouse.get_pressed()[0]==1 and se==1): #if start node
-            wall_pos=prepareCell(grid, screen, green, (1, 0, 0))
-            start_pos=wall_pos
-            checkstart=pygame.mouse.get_pos()
-            se=2
-        elif(pygame.mouse.get_pressed()[0]==1 and se==2 and pygame.mouse.get_pos()!=checkstart): #if end node
-            wall_pos=prepareCell(grid, screen, green, (0, 1, 0))
-            end_pos=wall_pos
-            se=0
+            if(pygame.mouse.get_pressed()[2]==1 and se!=-1): #if wall
+                wall_pos=prepareCell(grid, screen, black, 1, False)
+            if(event.type==pygame.KEYDOWN and event.key==pygame.K_s and pygame.mouse.get_pressed()[0]==1 and se==1): #if start node
+                wall_pos=prepareCell(grid, screen, green, 0, True)
+                start_pos=wall_pos
+                checkstart=pygame.mouse.get_pos()
+                se=2
+            if(event.type==pygame.KEYDOWN and event.key==pygame.K_e and pygame.mouse.get_pressed()[0]==1 and se==2): #if end node
+                wall_pos=prepareCell(grid, screen, green, 0, True)
+                end_pos=wall_pos
+                se=0
+            if(event.type==pygame.KEYDOWN and event.key==pygame.K_d and pygame.mouse.get_pressed()[0]==1):
+                prepareCell(grid, screen, white, 0, True)
+                updateGrid(screen, grid)
+                prepareCell(grid, screen, black, 1, True)
         #########################
         if(se==0):
             Astar(start_pos, end_pos ,grid, screen)
             se=-1
 
         updateGrid(screen, grid)
-        pygame.time.Clock().tick(60)
+        pygame.time.Clock().tick(120)
         pygame.display.update()
 
     pygame.quit()
