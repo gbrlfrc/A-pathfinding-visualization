@@ -15,3 +15,5 @@
   C : clear grid<br/>
   START BUTTON : to start the algorithm
   Note that each the walls, start point and end point can overwrite other cells, so be carefull to select different cells (this will be correct as soon as possible).
+
+![img](/home/gabriele/Scrivania/A-pathfinding-visualization-master/img.png)
