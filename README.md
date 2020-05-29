@@ -13,7 +13,7 @@
   HOLD LEFT CLICK + E : set the end node <br/>
   HOLD LEFT CLICK + D : delete a wall<br/>
   C : clear grid<br/>
-  START BUTTON : to start the algorithm
+  START BUTTON : to start the algorithm<br/>
   Note that each the walls, start point and end point can overwrite other cells, so be carefull to select different cells (this will be correct as soon as possible).
 
   ![](images/image1.png)
