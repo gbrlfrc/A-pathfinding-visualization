@@ -33,7 +33,7 @@ class Cell:
     def getPosition(self): return [self.posx, self.posy]
 
 
-def Astar(s, e, grid, screen):
+def Astar(s, e, grid, screen, start_btn, font):
     found=FOUND
     open_lst=close_lst=deque()
     open_lst.append(grid[s[0]][s[1]])
@@ -64,7 +64,7 @@ def Astar(s, e, grid, screen):
                         open_lst.append(neig)
                         grid[neigGridPos[0]][neigGridPos[1]].setColor(GREEN)
         time.sleep(0.005)
-        updateGrid(screen, grid)
+        updateGrid(screen, grid, start_btn, font)
         pygame.display.update()
 
     return
@@ -113,7 +113,7 @@ def getGridPos(posx, posy):
     return (int(math.floor(posx/CELL_SIZE)), int(math.floor(posy/CELL_SIZE)))
 
 #update color and outline of the cells before update s
-def updateGrid(screen, grid):
+def updateGrid(screen, grid, start_btn, font):
     for i in range(len(grid)):
         for j in range(len(grid[i])):
             if grid[i][j].walkable==False:grid[i][j].setOutline(0)
@@ -121,6 +121,8 @@ def updateGrid(screen, grid):
                 grid[i][j].setColor(PATH)
                 grid[i][j].setOutline(0)
             pygame.draw.rect(screen, grid[i][j].color, (grid[i][j].posx, grid[i][j].posy, grid[i][j].size, grid[i][j].size), grid[i][j].outline)
+    pygame.draw.rect(screen, (255, 255, 255), start_btn, 0)
+    screen.blit(font.render('Start', True, (0,0,0)), (820, 840))
     return grid
 
 # draw start cell, end cell and wall on grid
@@ -153,6 +155,8 @@ def main():
     white, black, blue, red, green=WHITE, BLACK, PATH, RED, GREEN
     wall_pos, start_pos, end_pos=(), (), ()
     se=1
+    start_btn=pygame.Rect(800, 830 , 80, 40)
+    font = pygame.font.SysFont('Arial', 25)
 
     screen=pygame.display.set_mode(win_size)
     pygame.display.set_caption("A* Visualization")
@@ -187,18 +191,19 @@ def main():
                 se=0
             if(event.type==pygame.KEYDOWN and event.key==pygame.K_d and pygame.mouse.get_pressed()[0]==1):
                 prepareCell(grid, screen, white, 0, True)
-                updateGrid(screen, grid)
+                updateGrid(screen, grid, start_btn, font)
                 prepareCell(grid, screen, black, 1, True)
         #########################
-        if(se==0):
-            Astar(start_pos, end_pos ,grid, screen)
+        if (pygame.mouse.get_pos()[0] in range(800, 880) and pygame.mouse.get_pos()[1] in range(800, 870) and pygame.mouse.get_pressed()[0]==1 and se==0):
+            Astar(start_pos, end_pos ,grid, screen, start_btn, font)
             se=-1
 
-        updateGrid(screen, grid)
+        updateGrid(screen, grid, start_btn, font)
         pygame.time.Clock().tick(120)
         pygame.display.update()
 
     pygame.quit()
 
 if __name__=='__main__':
+    pygame.init()
     main()

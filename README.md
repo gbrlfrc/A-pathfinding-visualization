@@ -10,7 +10,8 @@
 # Usage
   RIGHT CLICK : set wall<br/>
   HOLD LEFT CLICK + S : set the start node<br/>
-  HOLD LEFT CLICK + E : set the end node (note that as soon as the end node is seted the algorithm starts)<br/>
+  HOLD LEFT CLICK + E : set the end node <br/>
   HOLD LEFT CLICK + D : delete a wall<br/>
   C : clear grid<br/>
+  START BUTTON : to start the algorithm
   Note that each the walls, start point and end point can overwrite other cells, so be carefull to select different cells (this will be correct as soon as possible).
