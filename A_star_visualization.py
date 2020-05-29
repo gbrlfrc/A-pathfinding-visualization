@@ -63,7 +63,7 @@ def Astar(s, e, grid, screen, start_btn, font):
                         neig.parent=currentGridPos
                         open_lst.append(neig)
                         grid[neigGridPos[0]][neigGridPos[1]].setColor(GREEN)
-        time.sleep(0.005)
+        time.sleep(0.005) #manage the speed of animation
         updateGrid(screen, grid, start_btn, font)
         pygame.display.update()
 
