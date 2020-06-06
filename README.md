@@ -2,10 +2,10 @@
   This is my first A* algorithm implementation made in python and pygame. Suggestions are higly recommended
 
 # Python packages needed:
-  -math<br/>
-  -pygame<br/>
-  -collections<br/>
-  you can easly install all of them by typing 'pip install packagename' in terminal with root permission (python needed of course)
+All you need is:<br/>
+  >sudo pip install math<br/>
+  >sudo pip install pygame<br/>
+  >sudo pip install collections<br/>
 
 # Usage
   RIGHT CLICK : set wall<br/>
