@@ -1,4 +1,4 @@
-# A* pathfinding  algorithm visualization
+# A*PathfindingAlgorithmVisualization
   This is my first A* algorithm implementation made in python and pygame. Suggestions are higly recommended
 
 # Python packages needed:
