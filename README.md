@@ -1,11 +1,13 @@
 # A* Pathfinding Algorithm Visualization
   This is my first A* algorithm implementation made in python and pygame. Suggestions are higly recommended
 
-# Python packages needed:
-All you need is:<br/>
-  >sudo pip install math<br/>
-  >sudo pip install pygame<br/>
-  >sudo pip install collections<br/>
+# Installation:
+```bash
+ pip install -r requirements.txt
+ # or
+ pip3 install -r requirements.txt
+ # depending on pip version
+```
 
 # Usage
   RIGHT CLICK : set wall<br/>
